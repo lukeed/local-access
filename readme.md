@@ -1,4 +1,4 @@
-# local-access
+# local-access [![Build Status](https://travis-ci.org/lukeed/local-access.svg?branch=master)](https://travis-ci.org/lukeed/local-access)
 
 > Retrieve formatted URL addresses for local and LAN access.
 

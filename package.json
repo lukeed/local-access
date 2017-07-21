@@ -1,0 +1,30 @@
+{
+  "name": "local-access",
+  "version": "0.0.0",
+  "description": "Retrieve formatted URL addresses for local and LAN access.",
+  "repository": "lukeed/local-access",
+  "license": "MIT",
+  "author": {
+    "name": "Luke Edwards",
+    "email": "luke.edwards05@gmail.com",
+    "url": "lukeed.com"
+  },
+  "engines": {
+    "node": ">=6"
+  },
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    "ip",
+    "url",
+    "format",
+    "address",
+    "network",
+    "local",
+    "lan"
+  ],
+  "dependencies": {
+    "ip": "^1.1.5"
+  }
+}

@@ -11,9 +11,9 @@ function isLAN(obj) {
 module.exports = function (opts) {
 	opts = Object.assign({ hostname, port, https:false }, opts);
 	opts.protocol = opts.https ? 'https' : 'http';
-	let local = format(opts);
 
 	let k, tmp;
+	let local = format(opts);
 	let nets = networkInterfaces();
 	for (k in nets) {
 		if (tmp=nets[k].find(isLAN)) {

@@ -1,5 +1,5 @@
 {
-  "version": "1.0.1",
+  "version": "1.1.0",
   "name": "local-access",
   "repository": "lukeed/local-access",
   "description": "Retrieve formatted URL addresses for local and LAN access.",

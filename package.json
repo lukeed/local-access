@@ -3,11 +3,12 @@
   "version": "1.0.1",
   "description": "Retrieve formatted URL addresses for local and LAN access.",
   "repository": "lukeed/local-access",
+  "types": "index.d.ts",
   "license": "MIT",
   "author": {
     "name": "Luke Edwards",
     "email": "luke.edwards05@gmail.com",
-    "url": "lukeed.com"
+    "url": "https://lukeed.com"
   },
   "engines": {
     "node": ">=6"
@@ -16,7 +17,8 @@
     "test": "tape test/*.js | tap-spec"
   },
   "files": [
-    "index.js"
+    "index.js",
+    "index.d.ts"
   ],
   "keywords": [
     "ip",

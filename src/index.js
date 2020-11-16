@@ -1,15 +1,11 @@
 import { format } from 'url';
 import { networkInterfaces } from 'os';
 
-const hostname = 'localhost';
 const port = process.env.PORT || 8080;
-
-function isLAN(obj) {
-	return obj.family === 'IPv4' && !obj.internal;
-}
+const isLAN = x => x.family === 'IPv4' && !x.internal;
 
 export default function (opts) {
-	opts = Object.assign({ hostname, port, https:false }, opts);
+	opts = Object.assign({ hostname: 'localhost', port, https:false }, opts);
 	opts.protocol = opts.https ? 'https' : 'http';
 
 	let k, tmp;
@@ -22,6 +18,5 @@ export default function (opts) {
 		}
 	}
 
-	let network = format(opts);
-	return { local, network };
+	return { local, network: format(opts) };
 }

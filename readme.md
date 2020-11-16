@@ -13,6 +13,8 @@ $ npm install local-access --save-dev
 ## Usage
 
 ```js
+import localAccess from 'local-access';
+// or
 const localAccess = require('local-access');
 
 localAccess();
@@ -56,7 +58,7 @@ Same as [`urlObject.hostname`](https://nodejs.org/api/url.html#url_urlobject_hos
 
 #### options.port
 
-Type: `Number|String`<br>
+Type: `Number` or `String`<br>
 Default: `process.env.PORT || 8080`
 
 Same as [`urlObject.port`](https://nodejs.org/api/url.html#url_urlobject_port) -- added a default value.

@@ -1,8 +1,8 @@
 {
-  "name": "local-access",
   "version": "1.0.1",
-  "description": "Retrieve formatted URL addresses for local and LAN access.",
+  "name": "local-access",
   "repository": "lukeed/local-access",
+  "description": "Retrieve formatted URL addresses for local and LAN access.",
   "module": "index.mjs",
   "types": "index.d.ts",
   "main": "index.js",

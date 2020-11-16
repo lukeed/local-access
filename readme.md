@@ -1,4 +1,4 @@
-# local-access [![Build Status](https://travis-ci.org/lukeed/local-access.svg?branch=master)](https://travis-ci.org/lukeed/local-access)
+# local-access [![CI](https://github.com/lukeed/local-access/workflows/CI/badge.svg)](https://github.com/lukeed/local-access/actions?query=workflow%3ACI) [![codecov](https://badgen.net/codecov/c/github/lukeed/local-access)](https://codecov.io/gh/lukeed/local-access)
 
 > Retrieve formatted URL addresses for local and LAN access.
 

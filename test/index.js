@@ -1,52 +1,47 @@
-const test = require('tape');
-const fn = require('../');
+import { test } from 'uvu';
+import * as assert from 'uvu/assert';
+import laccess from '../src';
 
-const isStr = x => typeof x === 'string';
-const isObj = x => Boolean(x) && (x.constructor === Object);
-
-test('local-access', t => {
-	t.equal(typeof fn, 'function', 'exports a function');
-	t.end()
+test('local-access', () => {
+	assert.type(laccess, 'function', 'exports a function');
 });
 
-test('local-access (returns)', t => {
-	const out = fn();
-	t.true(isObj(out), 'returns an object');
-	t.true(out.local !== void 0, 'contains a `local` key');
-	t.true(isStr(out.local), 'returns `local` as `string` type');
-	t.true(out.network !== void 0, 'contains a `network` key');
-	t.true(isStr(out.network), 'returns `network` as `string` type');
-	t.end();
+test('local-access (returns)', () => {
+	const out = laccess();
+	assert.instance(out, Object, 'returns an object');
+
+	assert.ok(out.local !== void 0, 'contains a `local` key');
+	assert.type(out.local, 'string', 'returns `local` as `string` type');
+
+	assert.ok(out.network !== void 0, 'contains a `network` key');
+	assert.type(out.network, 'string', 'returns `network` as `string` type');
 });
 
-test('local-access (defaults)', t => {
-	const out = fn();
-	t.equal(out.local, 'http://localhost:8080', 'returns `local` as expected');
-	t.true(out.network.includes('http://'), 'returns `network` with expected protocol');
-	t.true(out.network.includes('8080'), 'returns `network` with expected port');
-	t.end();
+test('local-access (defaults)', () => {
+	const out = laccess();
+	assert.is(out.local, 'http://localhost:8080', 'returns `local` as expected');
+	assert.match(out.network, 'http://', 'returns `network` with expected protocol');
+	assert.match(out.network, '8080', 'returns `network` with expected port');
 });
 
-test('local-access ({ https })', t => {
-	const out = fn({ https:true });
-	t.true(out.local.includes('https://'), 'returns `local` with `https` protocol');
-	t.true(out.network.includes('https://'), 'returns `network` with `https` protocol');
-	t.end();
+test('local-access ({ https })', () => {
+	const out = laccess({ https:true });
+	assert.match(out.local, 'https://', 'returns `local` with `https` protocol');
+	assert.match(out.network, 'https://', 'returns `network` with `https` protocol');
 });
 
-test('local-access ({ port })', t => {
-	const out = fn({ port:3000 });
-	const foo = fn({ port:'3000' });
-	t.true(out.local.includes(':3000'), 'returns `local` with custom `port`');
-	t.true(out.network.includes(':3000'), 'returns `network` with custom `port`');
-	t.deepEqual(out, foo, 'accepts `port` as string or number type');
-	t.end();
+test('local-access ({ port })', () => {
+	const out = laccess({ port: 3000 });
+	assert.match(out.local, ':3000', 'returns `local` with custom `port`');
+	assert.match(out.network, ':3000', 'returns `network` with custom `port`');
+	assert.equal(out, laccess({ port: '3000' }), 'accepts `port` as string or number type');
 });
 
-test('local-access ({ hostname })', t => {
+test('local-access ({ hostname })', () => {
 	const val = '0.0.0.0';
-	const out = fn({ hostname:val });
-	t.true(out.local.includes(val), 'returns `local` with custom `hostname`');
-	t.false(out.network.includes(val), 'ignores custom `hostname` for `network` output');
-	t.end();
+	const out = laccess({ hostname: val });
+	assert.match(out.local, val, 'returns `local` with custom `hostname`');
+	assert.not.match(out.network, val, 'ignores custom `hostname` for `network` output');
 });
+
+test.run();

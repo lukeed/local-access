@@ -4,5 +4,5 @@ node_modules
 *.lock
 *.log
 
-/index.js
-/index.mjs
+# /index.js
+# /index.mjs

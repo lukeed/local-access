@@ -1,22 +1,30 @@
-import { format } from 'url';
+import { URL } from 'url';
 import { networkInterfaces } from 'os';
 
 const port = process.env.PORT || 8080;
 const isLAN = x => x.family === 'IPv4' && !x.internal;
 
-export default function (opts) {
-	opts = Object.assign({ hostname: 'localhost', port, https:false }, opts);
-	opts.protocol = opts.https ? 'https' : 'http';
+function format(url, opts) {
+	for (let [prop, value] of Object.entries(opts)) {
+		url[prop] = value;
+	}
+	return url.toString();
+}
 
-	let k, tmp;
-	let local = format(opts);
+export default function (opts) {
+	opts = { hostname: 'localhost', port, protocol: 'http', ...opts };
+
+	let url = new URL('http://localhost');
+	let local = format(url, opts);
+
+	let tmp;
 	let nets = networkInterfaces();
-	for (k in nets) {
-		if (tmp = nets[k].find(isLAN)) {
+	for (let [, props] of Object.entries(nets)) {
+		if (tmp = props.find(isLAN)) {
 			opts.hostname = tmp.address; // network IP
 			break;
 		}
 	}
 
-	return { local, network: format(opts) };
+	return { local, network: format(url, opts) };
 }

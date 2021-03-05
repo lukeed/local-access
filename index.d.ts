@@ -1,5 +1,5 @@
 export interface Options {
-	https?: boolean;
+	protocol?: string;
 	hostname?: string;
 	port?: string | number;
 	pathname?: string;

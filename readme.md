@@ -18,10 +18,13 @@ import localAccess from 'local-access';
 const localAccess = require('local-access');
 
 localAccess();
-//=> { local:'http://localhost:8080', network:'http://10.0.0.3:8080' }
+//=> { local:'http://localhost:8080/', network:'http://10.0.0.3:8080/' }
 
-localAccess({ https:true, port:3000 });
-//=> { local:'https://localhost:3000', network:'https://10.0.0.3:3000' }
+localAccess({ protocol:'https', port:3000 });
+//=> { local:'https://localhost:3000/', network:'https://10.0.0.3:3000/' }
+
+localAccess({ protocol:'ws', port:3000 });
+//=> { local:'ws://localhost:3000/', network:'ws://10.0.0.3:3000/' }
 
 localAccess({ pathname:'foo/bar' });
 //=> { local:'http://localhost:8080/foo/bar', network:'http://10.0.0.3:8080/foo/bar' }
@@ -32,7 +35,7 @@ localAccess({ pathname:'foo/bar' });
 
 ### localAccess(options)
 
-Parsing and formatting is controlled by [`url.format`](https://nodejs.org/api/url.html#url_url_format_urlobject), which means its `options` are inherited.
+Parsing and formatting is controlled by [`WHATWG URL API`](https://nodejs.org/api/url.html#url_the_whatwg_url_api), which means its `options` are inherited.
 
 #### options
 
@@ -40,28 +43,26 @@ Type: `Object`
 
 A [`URL`](https://nodejs.org/api/url.html#url_the_whatwg_url_api) instance, or _any_ object with matching keys.
 
-#### options.https
+#### options.protocol
 
-Type: `Boolean`<br>
-Default: `false`
+Type: `String`<br>
+Default: `http`
 
-Shortcut for determining the `options.protocol` value.
-
-> **Note:** This is the only config value unique to `local-access`!
+Same as [`urlObject.protocol`](https://nodejs.org/api/url.html#url_url_protocol) -- added a default value.
 
 #### options.hostname
 
 Type: `String`<br>
 Default: `'localhost'`
 
-Same as [`urlObject.hostname`](https://nodejs.org/api/url.html#url_urlobject_hostname) -- added a default value.
+Same as [`urlObject.hostname`](https://nodejs.org/api/url.html#url_url_hostname) -- added a default value.
 
 #### options.port
 
 Type: `Number` or `String`<br>
 Default: `process.env.PORT || 8080`
 
-Same as [`urlObject.port`](https://nodejs.org/api/url.html#url_urlobject_port) -- added a default value.
+Same as [`urlObject.port`](https://nodejs.org/api/url.html#url_url_port) -- added a default value.
 
 
 ## License

@@ -19,15 +19,28 @@ test('local-access (returns)', () => {
 
 test('local-access (defaults)', () => {
 	const out = laccess();
-	assert.is(out.local, 'http://localhost:8080', 'returns `local` as expected');
+	assert.is(out.local, 'http://localhost:8080/', 'returns `local` as expected');
 	assert.match(out.network, 'http://', 'returns `network` with expected protocol');
 	assert.match(out.network, '8080', 'returns `network` with expected port');
 });
 
-test('local-access ({ https })', () => {
-	const out = laccess({ https:true });
+test('local-access ({ pathname })', () => {
+	const out = laccess({ pathname: '/foo/bar' });
+	assert.is(out.local, 'http://localhost:8080/foo/bar', 'returns `local` as expected');
+	assert.match(out.network, 'http://', 'returns `network` with expected protocol');
+	assert.match(out.network, '8080', 'returns `network` with expected port');
+});
+
+test('local-access ({ protocol: https })', () => {
+	const out = laccess({ protocol:'https' });
 	assert.match(out.local, 'https://', 'returns `local` with `https` protocol');
 	assert.match(out.network, 'https://', 'returns `network` with `https` protocol');
+});
+
+test('local-access ({ protocol: wss })', () => {
+	const out = laccess({ protocol:'wss' });
+	assert.match(out.local, 'wss://', 'returns `local` with `wss` protocol');
+	assert.match(out.network, 'wss://', 'returns `network` with `wss` protocol');
 });
 
 test('local-access ({ port })', () => {

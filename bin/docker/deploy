@@ -1,0 +1,77 @@
+#!/bin/bash
+
+DIR="$(cd $(dirname $0) && pwd)"
+BIN_DIR="$(cd $DIR/.. && pwd)"
+
+# Import functions
+. $BIN_DIR/helper/fn
+
+usage() {
+	cat <<-EOF
+
+  Usage: $0 [options...]
+
+  Options:
+    -i                       Ignore build image
+    -e <staging|production>  Environment
+    -h                       Show usage
+
+EOF
+exit 0
+}
+
+# Go to current directory
+CURR_FOLDER="$(pwd)"
+cd $CURR_FOLDER
+
+BUILD=1
+OPT="staging"
+
+while getopts "ie:h" o
+do
+	case ${o} in
+		i) BUILD=0 ;;
+		e) test $OPTARG = "staging" -o $OPTARG = "production" && OPT=$OPTARG || usage ;;
+		h) usage ;;
+		\?) usage ;;
+	esac
+done
+
+# ENV File
+load_env $OPT
+
+if test -z "${DEPLOY_FOLDER}"; then
+	abort "Missing DEPLOY_FOLDER"
+fi
+
+# BUILD IMAGE and PUSH
+if test "${BUILD}" = "1"; then
+	$BIN_DIR/docker/image -e $OPT
+	test $? -ne 0 && abort "Image build fail" || ok "Image build done"
+fi
+
+# ENVSUBST
+ENVSUBST_FILE="$(which envsubst)"
+if test ! -f "${ENVSUBST_FILE}"; then
+	abort "Missing envsubst"
+fi
+
+# Criando docker-compose
+COMPOSE_TEMPLATE="${CURR_FOLDER}/docker-compose.template.yml"
+COMPOSE_DEPLOY="${CURR_FOLDER}/docker-compose-${VERSION}.yml"
+envsubst < $COMPOSE_TEMPLATE > $COMPOSE_DEPLOY
+
+# Sync
+rsync -avzlh --rsync-path="mkdir -p ${DEPLOY_FOLDER}; /usr/bin/rsync" -e ssh -r --delete --include-from "${CURR_FOLDER}/.rsync-include" --exclude-from "${CURR_FOLDER}/.rsync-exclude" "${CURR_FOLDER}/." "${USER}@${SERVER}:${DEPLOY_FOLDER}" > "${CURR_FOLDER}/.rsync.log"
+test $? -ne 0 && abort "Rsync fail" || ok "Rsync done"
+
+# Run
+ssh -T $USER@$SERVER <<EOF
+sudo -i
+cd $DEPLOY_FOLDER
+/usr/bin/docker stack deploy --with-registry-auth --prune --compose-file docker-compose-${VERSION}.yml ${DOCKER_STACK_NAME}_${OPT}
+exit 0
+EOF
+
+ok 'Oh Yeahh!!'
+exit 0

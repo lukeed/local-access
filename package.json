@@ -1,11 +1,12 @@
 {
-  "version": "1.1.0",
-  "name": "local-access",
-  "repository": "lukeed/local-access",
+  "version": "1.0.0",
+  "name": "@tadashi/local-access",
+  "repository": "lagden/local-access",
   "description": "Retrieve formatted URL addresses for local and LAN access.",
   "module": "index.mjs",
   "types": "index.d.ts",
   "main": "index.js",
+  "type": "module",
   "license": "MIT",
   "author": {
     "name": "Luke Edwards",
@@ -13,11 +14,13 @@
     "url": "https://lukeed.com"
   },
   "engines": {
-    "node": ">=6"
+    "node": ">=14.16"
   },
   "scripts": {
-    "build": "bundt",
-    "test": "uvu -r esm test"
+    "test": "node test/local.spec.js",
+    "prebuild": "npm test",
+    "build": "bundt src/local.js",
+    "prepublishOnly": "npm test && npm run build"
   },
   "files": [
     "index.js",
@@ -34,8 +37,7 @@
     "lan"
   ],
   "devDependencies": {
-    "bundt": "1.1.1",
-    "esm": "3.2.25",
-    "uvu": "0.4.1"
+    "bundt": "1.1.5",
+    "uvu": "0.5.3"
   }
 }

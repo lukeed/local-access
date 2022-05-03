@@ -1,0 +1,68 @@
+#!/bin/bash
+
+DIR="$(cd $(dirname $0) && pwd)"
+BIN_DIR="$(cd $DIR/.. && pwd)"
+
+# Import functions
+. $BIN_DIR/helper/fn
+
+usage() {
+	cat <<-EOF
+
+  Usage: $0 [options...]
+
+  Options:
+    -b            Build image
+    -d            Run containers in the background
+    -s <service>  Docker compose service name
+    -h            Show usage
+
+EOF
+exit 0
+}
+
+# Go to current directory
+CURR_FOLDER="$(pwd)"
+cd $CURR_FOLDER
+
+BUILD=""
+SERVICE=""
+DAEMON="--abort-on-container-exit"
+OPT="development"
+COMPOSE_TEMPLATE="${CURR_FOLDER}/docker-compose.template.yml"
+COMPOSE_LOCAL="${CURR_FOLDER}/docker-compose.local.yml"
+
+while getopts "bds:h" o
+do
+	case ${o} in
+		b) BUILD="--build" ;;
+		d) DAEMON="-d" ;;
+		s) SERVICE=$OPTARG ;;
+		h) usage ;;
+		\?) usage ;;
+	esac
+done
+
+# ENV File
+load_env $OPT
+
+# Generate ENVs for frontend application
+if test "${REQUIRE_GEN:-0}" = "1"; then
+	gen_env "${CURR_FOLDER}/resource/env.js"
+fi
+
+docker compose \
+	-f $COMPOSE_TEMPLATE \
+	-f $COMPOSE_LOCAL \
+	up \
+	--force-recreate \
+	--always-recreate-deps \
+	--remove-orphans \
+	--renew-anon-volumes \
+	$BUILD \
+	$DAEMON \
+	$SERVICE
+
+test $? -ne 0 && abort "Docker Compose up failed" || ok "Stopped gracefully"
+
+exit 0

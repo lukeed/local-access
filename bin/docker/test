@@ -1,0 +1,85 @@
+#!/bin/sh
+
+DIR="$(cd $(dirname $0) && pwd)"
+BIN_DIR="$(cd $DIR/.. && pwd)"
+
+# Import functions
+. $BIN_DIR/helper/fn
+
+usage() {
+	cat <<-EOF
+
+  Usage: $0 [options...]
+
+  Options:
+    -b            Build image
+    -s <service>  Docker compose service name
+    -h            Show usage
+
+EOF
+exit 0
+}
+
+# Go to current directory
+CURR_FOLDER="$(pwd)"
+cd $CURR_FOLDER
+
+BUILD=""
+SERVICE="app"
+OPT="test"
+COMPOSE_TEMPLATE="${CURR_FOLDER}/docker-compose.template.yml"
+COMPOSE_LOCAL="${CURR_FOLDER}/docker-compose.local.yml"
+COMPOSE_TEST="${CURR_FOLDER}/docker-compose.test.yml"
+
+_cleanup() {
+	docker compose \
+		-f $COMPOSE_TEMPLATE \
+		-f $COMPOSE_LOCAL \
+		-f $COMPOSE_TEST \
+		down \
+		--volumes \
+		--remove-orphans > /dev/null 2>&1
+}
+
+trap '_cleanup; abort "Tests failed for unexpected reasons"' HUP INT QUIT PIPE TERM SIGINT SIGTERM
+
+while getopts "bs:h" o
+do
+	case ${o} in
+		b) BUILD="--build" ;;
+		s) SERVICE=$OPTARG ;;
+		h) usage ;;
+		\?) usage ;;
+	esac
+done
+
+# ENV File
+load_env $OPT
+
+# Generate ENVs for frontend application
+if test "${REQUIRE_GEN:-0}" = "1"; then
+	gen_env "${CURR_FOLDER}/resource/env.js"
+fi
+
+docker compose \
+	-f $COMPOSE_TEMPLATE \
+	-f $COMPOSE_LOCAL \
+	-f $COMPOSE_TEST \
+	up \
+	--force-recreate \
+	--always-recreate-deps \
+	--abort-on-container-exit \
+	--exit-code-from ${SERVICE} \
+	--remove-orphans \
+	--renew-anon-volumes \
+	$BUILD
+
+if test $? -ne 0; then
+	_cleanup
+	abort "Test FAIL"
+fi
+
+_cleanup
+ok "Test PASS"
+
+exit 0

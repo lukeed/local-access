@@ -1,0 +1,78 @@
+#!/bin/bash
+
+DIR="$(cd $(dirname $0) && pwd)"
+BIN_DIR="$(cd $DIR/.. && pwd)"
+
+# Import functions
+. $BIN_DIR/helper/fn
+
+usage() {
+	cat <<-EOF
+
+  Usage: $0 [options...]
+
+  Options:
+    -e <production|staging>  Environment
+    -h                       Show usage
+
+EOF
+exit 0
+}
+
+# Go to current directory
+CURR_FOLDER="$(pwd)"
+cd $CURR_FOLDER
+
+OPT="staging"
+
+while getopts "e:h" o
+do
+	case ${o} in
+		e) [ $OPTARG = "staging" -o $OPTARG = "production" ] && OPT=$OPTARG || usage ;;
+		h) usage ;;
+		\?) usage ;;
+	esac
+done
+
+# ENV File
+load_env $OPT
+
+# Generate ENVs for frontend application
+if test "${REQUIRE_GEN:-0}" = "1"; then
+	gen_env "${CURR_FOLDER}/resource/env.js"
+fi
+
+# Variables
+REGISTRY_USER="$(cat ${CURR_FOLDER}/.registry-user)"
+REGISTRY_PASSWD="$(cat ${CURR_FOLDER}/.registry-passwd)"
+TAG_IMAGE="${REGISTRY}/${IMAGE}:${VERSION}"
+TAG_IMAGE_LATEST="${REGISTRY}/${IMAGE}:latest"
+DOCKER_TARGET_BUILD="${DOCKER_TARGET_BUILD:-main}"
+
+# Build
+docker build \
+	--build-arg NODE_ENV=${NODE_ENV} \
+	--target $DOCKER_TARGET_BUILD \
+	--compress \
+	--force-rm \
+	--tag $TAG_IMAGE \
+	--tag $TAG_IMAGE_LATEST \
+	--no-cache .
+	# --no-cache . 2> .docker-buid.log
+
+test $? -ne 0 && abort "Falha no build da image --> ${TAG_IMAGE}" || ok "Build image ok --> ${TAG_IMAGE}"
+
+# Push (Send image to Registry)
+cat ${CURR_FOLDER}/.registry-passwd | docker login $REGISTRY --username $REGISTRY_USER --password-stdin
+docker push $TAG_IMAGE
+
+if test "${OPT}" = "production"; then
+	docker push $TAG_IMAGE_LATEST
+fi
+
+# # Cleanup
+# docker rmi $(docker images -q -f "dangling=true" -f "label=autodelete=true")
+
+ok "Build finalizado... Yeahh!!!"
+
+exit 0

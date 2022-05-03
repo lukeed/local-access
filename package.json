@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0",
+  "version": "1.1.0",
   "name": "local-access",
   "repository": "lukeed/local-access",
   "description": "Retrieve formatted URL addresses for local and LAN access.",
@@ -13,7 +13,7 @@
     "url": "https://lukeed.com"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=6"
   },
   "scripts": {
     "build": "bundt",
@@ -34,8 +34,8 @@
     "lan"
   ],
   "devDependencies": {
-    "bundt": "1.1.2",
+    "bundt": "1.1.1",
     "esm": "3.2.25",
-    "uvu": "0.5.1"
+    "uvu": "0.4.1"
   }
 }

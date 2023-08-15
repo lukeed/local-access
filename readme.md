@@ -6,27 +6,25 @@
 ## Install
 
 ```
-$ npm install local-access --save-dev
+$ npm install @tadashi/local-access
 ```
 
 
 ## Usage
 
 ```js
-import localAccess from 'local-access';
-// or
-const localAccess = require('local-access');
+import localAccess from 'local-access'
 
-localAccess();
+localAccess()
 //=> { local:'http://localhost:8080/', network:'http://10.0.0.3:8080/' }
 
-localAccess({ protocol:'https', port:3000 });
+localAccess({ protocol:'https', port:3000 })
 //=> { local:'https://localhost:3000/', network:'https://10.0.0.3:3000/' }
 
-localAccess({ protocol:'ws', port:3000 });
+localAccess({ protocol:'ws', port:3000 })
 //=> { local:'ws://localhost:3000/', network:'ws://10.0.0.3:3000/' }
 
-localAccess({ pathname:'foo/bar' });
+localAccess({ pathname:'foo/bar' })
 //=> { local:'http://localhost:8080/foo/bar', network:'http://10.0.0.3:8080/foo/bar' }
 ```
 

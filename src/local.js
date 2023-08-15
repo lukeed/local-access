@@ -11,7 +11,7 @@ function format(url, opts) {
 	return url.toString()
 }
 
-export default function (opts) {
+function local(opts) {
 	opts = {
 		hostname: 'localhost',
 		port,
@@ -36,3 +36,5 @@ export default function (opts) {
 		network: format(url, opts)
 	}
 }
+
+export default local

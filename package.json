@@ -1,11 +1,9 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "name": "@tadashi/local-access",
   "repository": "lagden/local-access",
   "description": "Retrieve formatted URL addresses for local and LAN access.",
-  "module": "index.mjs",
-  "types": "index.d.ts",
-  "main": "index.js",
+  "main": "./src/local.js",
   "type": "module",
   "license": "MIT",
   "author": {
@@ -17,15 +15,12 @@
     "node": ">=14.16"
   },
   "scripts": {
-    "test": "node test/local.spec.js",
-    "prebuild": "npm test",
-    "build": "bundt src/local.js",
-    "prepublishOnly": "npm test && npm run build"
+    "test": "node --test",
+    "test_": "node test/local.spec.js",
+    "prepublishOnly": "npm test"
   },
   "files": [
-    "index.js",
-    "index.mjs",
-    "index.d.ts"
+    "src"
   ],
   "keywords": [
     "ip",
@@ -37,7 +32,6 @@
     "lan"
   ],
   "devDependencies": {
-    "bundt": "1.1.5",
     "uvu": "0.5.3"
   }
 }

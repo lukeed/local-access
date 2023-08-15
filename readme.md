@@ -1,6 +1,19 @@
-# local-access [![CI](https://github.com/lukeed/local-access/workflows/CI/badge.svg)](https://github.com/lukeed/local-access/actions?query=workflow%3ACI) [![codecov](https://badgen.net/codecov/c/github/lukeed/local-access)](https://codecov.io/gh/lukeed/local-access)
+# @tadashi/local-access
 
-> Retrieve formatted URL addresses for local and LAN access.
+[![NPM version][npm-img]][npm]
+[![Build Status][ci-img]][ci]
+[![Coverage Status][coveralls-img]][coveralls]
+
+
+[npm-img]:         https://img.shields.io/npm/v/@tadashi/local-access.svg
+[npm]:             https://www.npmjs.com/package/@tadashi/local-access
+[ci-img]:          https://github.com/lagden/local-access/actions/workflows/nodejs.yml/badge.svg
+[ci]:              https://github.com/lagden/local-access/actions/workflows/nodejs.yml
+[coveralls-img]:   https://coveralls.io/repos/github/lagden/local-access/badge.svg?branch=master
+[coveralls]:       https://coveralls.io/github/lagden/local-access?branch=master
+
+
+Retrieve formatted URL addresses for local and LAN access.
 
 
 ## Install
@@ -13,18 +26,18 @@ $ npm install @tadashi/local-access
 ## Usage
 
 ```js
-import localAccess from 'local-access'
+import la from '@tadashi/local-access'
 
-localAccess()
+la()
 //=> { local:'http://localhost:8080/', network:'http://10.0.0.3:8080/' }
 
-localAccess({ protocol:'https', port:3000 })
+la({ protocol:'https', port:3000 })
 //=> { local:'https://localhost:3000/', network:'https://10.0.0.3:3000/' }
 
-localAccess({ protocol:'ws', port:3000 })
+la({ protocol:'ws', port:3000 })
 //=> { local:'ws://localhost:3000/', network:'ws://10.0.0.3:3000/' }
 
-localAccess({ pathname:'foo/bar' })
+la({ pathname:'foo/bar' })
 //=> { local:'http://localhost:8080/foo/bar', network:'http://10.0.0.3:8080/foo/bar' }
 ```
 
@@ -66,3 +79,4 @@ Same as [`urlObject.port`](https://nodejs.org/api/url.html#url_url_port) -- adde
 ## License
 
 MIT © [Luke Edwards](https://lukeed.com)
+MIT © [Thiago Lagden](https://github.com/lagden)

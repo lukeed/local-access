@@ -1,9 +1,9 @@
 {
-  "version": "1.0.1",
+  "version": "1.1.0",
   "name": "@tadashi/local-access",
   "repository": "lagden/local-access",
   "description": "Retrieve formatted URL addresses for local and LAN access.",
-  "main": "./src/local.js",
+  "main": "src/local.js",
   "type": "module",
   "license": "MIT",
   "author": {
@@ -12,11 +12,12 @@
     "url": "https://lukeed.com"
   },
   "engines": {
-    "node": ">=14.16"
+    "node": ">=18"
   },
   "scripts": {
-    "test": "node --test",
-    "test_": "node test/local.spec.js",
+    "eslint": "eslint --ignore-path .gitignore .",
+    "pretest": "npm run eslint",
+    "test": "c8 --reporter=text --reporter=text-summary --reporter=lcov --reporter=cobertura node --test",
     "prepublishOnly": "npm test"
   },
   "files": [
@@ -32,6 +33,8 @@
     "lan"
   ],
   "devDependencies": {
-    "uvu": "0.5.3"
+    "c8": "8.0.1",
+    "eslint": "8.47.0",
+    "eslint-plugin-unicorn": "48.0.1"
   }
 }

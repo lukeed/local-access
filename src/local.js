@@ -1,32 +1,32 @@
-import {URL} from 'url'
-import {networkInterfaces} from 'os'
+import {URL} from 'node:url'
+import {networkInterfaces} from 'node:os'
 
 const port = process.env.PORT ?? 8080
 const isLAN = x => x.family === 'IPv4' && !x.internal
 
 function format(url, opts) {
-	for (let [prop, value] of Object.entries(opts)) {
+	for (const [prop, value] of Object.entries(opts)) {
 		url[prop] = value
 	}
 	return url.toString()
 }
 
-function local(opts) {
-	opts = {
+function local(_opts) {
+	const opts = {
 		hostname: 'localhost',
 		port,
 		protocol: 'http',
-		...opts
+		..._opts
 	}
 
-	let url = new URL('http://localhost')
-	let local = format(url, opts)
+	const url = new URL('http://localhost')
+	const local = format(url, opts)
 
-	let tmp
 	let nets = networkInterfaces()
 	for (let [, props] of Object.entries(nets)) {
-		if (tmp = props.find(isLAN)) {
-			opts.hostname = tmp.address // network IP
+		const tmp = props.find(isLAN)
+		if (tmp) {
+			opts.hostname = tmp.address
 			break
 		}
 	}
